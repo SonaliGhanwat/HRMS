@@ -2,6 +2,7 @@ package com.nextech.hrms.dao;
 
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,6 +11,7 @@ import org.hibernate.Transaction;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import com.nextech.hrms.main.EmployeeMain;
 import com.nextech.hrms.model.Employee;
 import com.nextech.hrms.model.Employeeattendance;
 import com.nextech.hrms.util.HibernateUtil;
@@ -18,6 +20,7 @@ import com.nextech.hrms.util.HibernateUtil;
 public class EmployeeAttendanceDao {
 	public static Scanner sc = new Scanner(System.in);
 	public long totaltime;
+	public static String data ="";
 	public void addEmployeeAttendance(Employeeattendance employeeattendance) throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;  
@@ -50,10 +53,10 @@ public class EmployeeAttendanceDao {
 	
 	}
 	 public void getEmployeeAttendanceStatus(Employeeattendance employeeAttendance) throws ClassNotFoundException, SQLException{
-		 Session session=HibernateUtil.getSessionFactory().openSession();
-		 Transaction tx = null;  
+		 //Session session=HibernateUtil.getSessionFactory().openSession();
+		 //Transaction tx = null;  
 		 try {
-			 tx=session.beginTransaction();  
+			 //tx=session.beginTransaction();  
 			
 		        if(employeeAttendance.getTotaltime()>=1 && employeeAttendance.getTotaltime()<=4){
 			        employeeAttendance.setStatus("HalfDay");
@@ -77,12 +80,12 @@ public class EmployeeAttendanceDao {
 	    		  tx=session.beginTransaction();  
 	    		  Employeeattendance employeeAttendance1=new Employeeattendance();
 		    	  System.out.println("Enter Employee Id to delete.");
-		    	  int id = Integer.parseInt(sc.nextLine());
-		    	  employeeAttendance1.setId(id);
+		    	  integerValidation();
+		    	  employeeAttendance1.setId(Integer.parseInt(data));
 		    	Employeeattendance employeeAttendance = (Employeeattendance)session.get(Employeeattendance.class,employeeAttendance1.getId());
 		    	if(employeeAttendance !=null){
 		    		employeeAttendance.setIsActive(false);
-		    	session.delete(employeeAttendance);
+		    	session.update(employeeAttendance);
 	    		  session.getTransaction().commit();
 	    		  session.close();  
 		    	}else{
@@ -101,18 +104,20 @@ public class EmployeeAttendanceDao {
 				tx=session.beginTransaction(); 
 				Employeeattendance employeeattendance1 = new Employeeattendance();
 				System.out.println("Enter Employee Id to update data.");
-			    int id = Integer.parseInt(sc.nextLine());
-			    employeeattendance1.setId(id);
+				integerValidation();
+				employeeattendance1.setId(Integer.parseInt(data));
 			    Employeeattendance employeeattendance = (Employeeattendance)session.get(Employeeattendance.class,employeeattendance1.getId());
 			    if(employeeattendance !=null){
 			    System.out.println("Enter intime");
-				Time intime=(Time.valueOf(sc.nextLine()));
-				employeeattendance.setIntime(intime);
+			    timeValidation();
+				employeeattendance.setIntime(Time.valueOf(data));
 				employeeattendance.setIntime(employeeattendance.getIntime());
+				Time intime = employeeattendance.getIntime();
 				System.out.println("Enter outtime");
-				Time outtime=(Time.valueOf(sc.nextLine()));
-				employeeattendance.setOuttime(outtime);
+				timeValidation();
+				employeeattendance.setOuttime(Time.valueOf(data));
 				employeeattendance.setOuttime(employeeattendance.getOuttime());
+				Time outtime = employeeattendance.getOuttime();
 				totaltime = outtime.getTime() - intime.getTime(); 
 				System.out.println("time : " +totaltime);
 				long diffHours = totaltime / (60 * 60 * 1000) % 24;
@@ -170,8 +175,8 @@ public class EmployeeAttendanceDao {
 				tx=session.beginTransaction(); 
 				Employeeattendance employeeattendance1 = new Employeeattendance();
 				System.out.println("Enter Employee Id .");
-			    int id = Integer.parseInt(sc.nextLine());
-			    employeeattendance1.setId(id);
+				integerValidation();
+				employeeattendance1.setId(Integer.parseInt(data));
 				Employeeattendance employeeattendance = (Employeeattendance)session.get(Employeeattendance.class,employeeattendance1.getId());
 				if(employeeattendance !=null){
 			    session.getTransaction().commit();
@@ -189,4 +194,39 @@ public class EmployeeAttendanceDao {
 		}
 			
   }
+	 public void integerValidation(){
+			while (sc.hasNext()) {
+				data = sc.next();
+				if (EmployeeMain.numberOrNot(data)) {
+					break;
+				} else {
+					System.out.println("please enter only number");
+				}
+
+			}
+		 }
+	 public static boolean numberOrNot(String input)
+	    {
+	        try
+	        {
+	            Integer.parseInt(input);
+	        }
+	        catch(NumberFormatException ex)
+	        {
+	            return false;
+	        }
+	        return true;
+	    }
+	 public void timeValidation() throws ParseException{
+		 while (sc.hasNext()) {
+			     data = sc.next();
+				if (EmployeeMain.isTime(data)) {
+					break;
+				} else {
+					System.out.println("please enter date hh-mm-ss format");
+
+				}
+		 }
+	    }
+	 
 }

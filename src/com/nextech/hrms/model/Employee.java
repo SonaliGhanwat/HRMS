@@ -22,7 +22,8 @@ public class Employee implements Serializable {
 	@GeneratedValue
 	@Column(name = "Id")
 	private int id;
-
+    
+	
 	private boolean isActive;
 	
 	private String address;
@@ -36,7 +37,7 @@ public class Employee implements Serializable {
 	private Date dateOfJoining;
 
 	private String department;
-
+    
 	private String emailid;
 
 	@Column(name="first_name")
@@ -50,7 +51,7 @@ public class Employee implements Serializable {
 	private String password;
 
 	@Column(name="phone_number")
-	private int phoneNumber;
+	private String phoneNumber;
 
 	private int salary;
 
@@ -64,6 +65,12 @@ public class Employee implements Serializable {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
 	private List<Employeedailytask> employeedailytasks;
+	
+
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
+	private List<Employeeleave> employeeleaves;
+	
 
 	public List<Employeedailytask> getEmployeedailytasks() {
 		return employeedailytasks;
@@ -156,11 +163,13 @@ public class Employee implements Serializable {
 		this.password = password;
 	}
 
-	public int getPhoneNumber() {
-		return this.phoneNumber;
+	
+
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhoneNumber(int phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -217,6 +226,15 @@ public List<Employeeattendance> getEmployeeattendances() {
 
 	public void setEmployeeattendances(List<Employeeattendance> employeeattendances) {
 		this.employeeattendances = employeeattendances;
+	}
+	
+
+public List<Employeeleave> getEmployeeleaves() {
+		return employeeleaves;
+	}
+
+	public void setEmployeeleaves(List<Employeeleave> employeeleaves) {
+		this.employeeleaves = employeeleaves;
 	}
 
 @Override

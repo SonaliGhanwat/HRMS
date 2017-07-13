@@ -19,6 +19,7 @@
         <mapping class="com.nextech.hrms.model.Employee" />
 		<mapping class="com.nextech.hrms.model.Employeeattendance" />
 		<mapping class="com.nextech.hrms.model.Employeedailytask" />
+		<mapping class="com.nextech.hrms.model.Employeeleave" />
 
 	</session-factory>
 </hibernate-configuration>

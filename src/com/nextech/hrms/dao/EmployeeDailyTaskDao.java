@@ -2,18 +2,23 @@ package com.nextech.hrms.dao;
 
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+
+import com.nextech.hrms.main.EmployeeMain;
 import com.nextech.hrms.model.Employee;
 import com.nextech.hrms.model.Employeedailytask;
 import com.nextech.hrms.util.HibernateUtil;
 
 public class EmployeeDailyTaskDao {
 	public static Scanner sc = new Scanner(System.in);
+	public static String data ="";
 	public void addEmployeedailytaskUser(Employeedailytask employeedailytask) throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;  
@@ -36,6 +41,7 @@ public class EmployeeDailyTaskDao {
 			session.save(employeedailytask);
 			session.getTransaction().commit();
 		    session.close();  
+			
 		    //tx.commit();
 			 System.out.println("Insert Successfully");
 			}
@@ -51,12 +57,12 @@ public class EmployeeDailyTaskDao {
 		  tx=session.beginTransaction();  
 		  Employeedailytask employeedailytask1=new Employeedailytask();
     	  System.out.println("Enter Employee Id to delete.");
-    	  int id = Integer.parseInt(sc.nextLine());
-    	  employeedailytask1.setId(id);
+    	  integerValidation();
+    	  employeedailytask1.setId(Integer.parseInt(data));
     	  Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
     	if(employeedailytask !=null){
     		employeedailytask.setIsActive(false);
-    	session.delete(employeedailytask);
+    	session.update(employeedailytask);
 		  session.getTransaction().commit();
 		  session.close();  
     	}else{
@@ -75,30 +81,30 @@ public class EmployeeDailyTaskDao {
 				tx=session.beginTransaction(); 
 				Employeedailytask employeedailytask1 = new Employeedailytask();
 				System.out.println("Enter Employee Id to update data.");
-			    int id = Integer.parseInt(sc.nextLine());
-			    employeedailytask1.setId(id);
+				 integerValidation();
+		    	 employeedailytask1.setId(Integer.parseInt(data));
 			    Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
 			    if(employeedailytask !=null){
 			    	System.out.println("Enter TaskName");
-					String tsakname=(sc.nextLine());
-					employeedailytask.setTaskName(tsakname);
+			    	stringValidation();
+					employeedailytask.setTaskName(data);
 					employeedailytask.setTaskName(employeedailytask.getTaskName());
 					System.out.println("Enter EstimationTime");
-					Time estimation_time=(Time.valueOf(sc.nextLine()));
-					employeedailytask.setEstimationTime(estimation_time);;
-					employeedailytask.setEstimationTime(employeedailytask.getEstimationTime());
+					timeValidation();
+					employeedailytask.setEstimationTime(Time.valueOf(data));;
 					System.out.println("Enter StartTime");
-					Time starttime=(Time.valueOf(sc.nextLine()));
-					employeedailytask.setStarttime(starttime);
-					employeedailytask.setStarttime(employeedailytask.getStarttime());
+					timeValidation();
+					employeedailytask.setStarttime(Time.valueOf(data));
+					Time starttime= employeedailytask.getStarttime();
 					System.out.println("Enter EndTime");
-					Time endtime=(Time.valueOf(sc.nextLine()));
-					employeedailytask.setEndtime(endtime);
-					employeedailytask.setEndtime(employeedailytask.getEndtime());
+					timeValidation();
+					employeedailytask.setEndtime(Time.valueOf(data));
+					Time endtime = employeedailytask.getEndtime();
 					long totaltime = endtime.getTime() - starttime.getTime();
 					long diffHours = totaltime / (60 * 60 * 1000) % 24;
 					System.out.print("Totaltime\n"  +diffHours);
 					employeedailytask.setTakenTime(diffHours);
+					System.out.println();
 			   
 			    session.update(employeedailytask);
 			    session.getTransaction().commit();
@@ -150,9 +156,9 @@ public class EmployeeDailyTaskDao {
 				tx=session.beginTransaction(); 
 				Employeedailytask employeedailytask1 = new Employeedailytask();
 				System.out.println("Enter Employee Id .");
-			    int id = Integer.parseInt(sc.nextLine());
-			    employeedailytask1.setId(id);
-			    Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
+				integerValidation();
+		    	employeedailytask1.setId(Integer.parseInt(data));			    
+		    	Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
 				if(employeedailytask !=null){
 			    session.getTransaction().commit();
 			    session.close();  
@@ -178,11 +184,12 @@ public class EmployeeDailyTaskDao {
 			Employee employee = new Employee();
 			Employeedailytask employeedailytask1 = new Employeedailytask();
 			System.out.println("Enter Employee Id.");
-			int id = Integer.parseInt(sc.nextLine());
-			employee.setId(id);
+			integerValidation();
+			employee.setId(Integer.parseInt(data));
 			employeedailytask1.setEmployee(employee);
 			Criteria criteria = session.createCriteria(Employeedailytask.class);
 			criteria.add(Restrictions.eq("employee.id", employeedailytask1.getEmployee().getId()));
+			//criteria.add(Restrictions.eq("isActive",true));
 			Employeedailytask employeedailytask2 = criteria.list().size() > 0 ? (Employeedailytask) criteria.list().get(0) : null;
 					
 			System.out.println("Employe Daily Task:" + employeedailytask2);
@@ -192,6 +199,40 @@ public class EmployeeDailyTaskDao {
 			tx.rollback(); 
 		}
   }
+	 public void integerValidation(){
+			while (sc.hasNext()) {
+				data = sc.next();
+				if (EmployeeMain.numberOrNot(data)) {
+					break;
+				} else {
+					System.out.println("please enter only number");
+				}
+
+			}
+		 }
+	 
+	 public void stringValidation(){
+			while (sc.hasNext()) {
+				data = sc.next();
+				if (EmployeeMain.isFullname(data)) {
+					break;
+				} else {
+					System.out.println("please enter only character");
+				}
+
+			}
+		 }
+	 public void timeValidation() throws ParseException{
+		 while (sc.hasNext()) {
+			     data = sc.next();
+				if (EmployeeMain.isTime(data)) {
+					break;
+				} else {
+					System.out.println("please enter date hh-mm-ss format");
+
+				}
+		 }
+	    }
 	
 
 }

@@ -9,11 +9,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.nextech.hrms.main.EmployeeMain;
 import com.nextech.hrms.model.Employee;
 import com.nextech.hrms.util.HibernateUtil;
 
 public class EmployeeDao {
 	public static Scanner sc = new Scanner(System.in);
+	public static String data ="";
 	public void addUser(Employee employee) throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;  
@@ -50,8 +52,8 @@ public class EmployeeDao {
 			tx=session.beginTransaction(); 
 			Employee employee1 = new Employee();
 			System.out.println("Enter Employee Id to delete.");
-		    int id = Integer.parseInt(sc.nextLine());
-			employee1.setId(id);
+			integerValidation();		
+			employee1.setId(Integer.parseInt(data));
 			Employee employee = (Employee)session.get(Employee.class,employee1.getId());
 			if(employee !=null){
 			employee.setIsActive(false);
@@ -76,17 +78,16 @@ public class EmployeeDao {
 				tx=session.beginTransaction(); 
 				Employee employee1 = new Employee();
 				System.out.println("Enter Employee Id to update data.");
-			    int id = Integer.parseInt(sc.nextLine());
-				employee1.setId(id);
+				integerValidation();
+				employee1.setId(Integer.parseInt(data));
 				Employee employee = (Employee)session.get(Employee.class,employee1.getId());
-				if(employee !=null){
-				System.out.println("Enter Employee firstName");
-				String firstName = (sc.nextLine());
-				employee1.setFirstName(firstName);
-				employee.setFirstName(employee1.getFirstName());
-			    session.update(employee);
-			    session.getTransaction().commit();
-			    session.close(); 
+			if (employee != null) {
+				System.out.println("Enter Employee phoneNumber");
+				phoneNumberValidation(employee);
+				employee.setFirstName(employee1.getPhoneNumber());
+				session.update(employee);
+				session.getTransaction().commit();
+				session.close();
 				}else{
 					System.out.println("please enter valid id");
 				}
@@ -140,8 +141,8 @@ public class EmployeeDao {
 					tx=session.beginTransaction(); 
 					Employee employee1 = new Employee();
 					System.out.println("Enter Employee Id to update data.");
-				    int id = Integer.parseInt(sc.nextLine());
-					employee1.setId(id);
+					integerValidation();
+					employee1.setId(Integer.parseInt(data));
 					Employee employee = (Employee)session.get(Employee.class,employee1.getId());
 					if(employee !=null){
 				    session.getTransaction().commit();
@@ -159,4 +160,43 @@ public class EmployeeDao {
 			}
 				
 	  }
+	  public void integerValidation(){
+			while (sc.hasNext()) {
+				data = sc.next();
+				if (EmployeeDao.numberOrNot(data)) {
+					break;
+				} else {
+					System.out.println("please enter only number");
+				}
+
+			}
+		 }
+	  public void phoneNumberValidation(Employee employee){
+			
+	        while(sc.hasNext()){
+	        	String	phoneNumber=sc.next();
+	        
+	        if(EmployeeMain.numberOrNot(phoneNumber) && (phoneNumber.length() == 10)){
+	        	employee.setPhoneNumber(phoneNumber);
+	            break;
+	            
+	        }else{
+	            System.out.println("please enter 10 digit mobile number");
+	        }
+	        }
+			
+		}
+	  static boolean numberOrNot(String input)
+	    {
+	        try
+	        {
+	            Integer.parseInt(input);
+	        }
+	        catch(NumberFormatException ex)
+	        {
+	            return false;
+	        }
+	        return true;
+	    }
+	  
 }
