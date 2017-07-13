@@ -43,12 +43,13 @@ public class EmployeeDailyTaskDao {
 		    session.close();  
 			
 		    //tx.commit();
-			 System.out.println("Insert Successfully");
+		
 			}
 			catch(Exception e){
 				e.printStackTrace();
 				tx.rollback();  
 			}
+		 System.out.println("Insert Successfully");
 	}
 	public void deleteEmployeeDailyTask() throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
@@ -56,7 +57,7 @@ public class EmployeeDailyTaskDao {
 		try{
 		  tx=session.beginTransaction();  
 		  Employeedailytask employeedailytask1=new Employeedailytask();
-    	  System.out.println("Enter Employee Id to delete.");
+    	  System.out.println("Enter EmployeeDailytask Id to delete.");
     	  integerValidation();
     	  employeedailytask1.setId(Integer.parseInt(data));
     	  Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
@@ -68,10 +69,11 @@ public class EmployeeDailyTaskDao {
     	}else{
 			System.out.println("please enter valid id");
 		}
-		  System.out.println("Deleted Successfully");
+		 
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			 System.out.println("Deleted Successfully");
 		}
 	}
 	public void updateDailyTaskUser() throws ClassNotFoundException {
@@ -80,7 +82,7 @@ public class EmployeeDailyTaskDao {
 			try{
 				tx=session.beginTransaction(); 
 				Employeedailytask employeedailytask1 = new Employeedailytask();
-				System.out.println("Enter Employee Id to update data.");
+				System.out.println("Enter EmployeeDailytask Id to update data.");
 				 integerValidation();
 		    	 employeedailytask1.setId(Integer.parseInt(data));
 			    Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
@@ -113,11 +115,12 @@ public class EmployeeDailyTaskDao {
 					System.out.println("please enter valid id");
 				}
 			    //tx.commit();
-			    System.out.println("Update Successfully");
+			   
 			}
 			catch(Exception e){
 				e.printStackTrace();
 				tx.rollback(); 
+				 System.out.println("Update Successfully");
 			}
 	 }
 	 public List<Employeedailytask> getDailyTaskAllUsers() throws ClassNotFoundException, SQLException {
@@ -155,7 +158,7 @@ public class EmployeeDailyTaskDao {
 			try{
 				tx=session.beginTransaction(); 
 				Employeedailytask employeedailytask1 = new Employeedailytask();
-				System.out.println("Enter Employee Id .");
+				System.out.println("Enter Employeedailytask Id .");
 				integerValidation();
 		    	employeedailytask1.setId(Integer.parseInt(data));			    
 		    	Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
@@ -200,8 +203,9 @@ public class EmployeeDailyTaskDao {
 		}
   }
 	 public void integerValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				nullValidation();
 				if (EmployeeMain.numberOrNot(data)) {
 					break;
 				} else {
@@ -212,8 +216,9 @@ public class EmployeeDailyTaskDao {
 		 }
 	 
 	 public void stringValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				nullValidation();
 				if (EmployeeMain.isFullname(data)) {
 					break;
 				} else {
@@ -223,8 +228,9 @@ public class EmployeeDailyTaskDao {
 			}
 		 }
 	 public void timeValidation() throws ParseException{
-		 while (sc.hasNext()) {
-			     data = sc.next();
+		 while (true) {
+			     //data = sc.next();
+			      nullValidation();
 				if (EmployeeMain.isTime(data)) {
 					break;
 				} else {
@@ -233,6 +239,17 @@ public class EmployeeDailyTaskDao {
 				}
 		 }
 	    }
+	 private void nullValidation() {
+			while (true) {
+				data = sc.nextLine();
+				if (data != null && data.length() == 0) {
+					System.out.println("please enter data");
+				} else {
+					break;
+				}
+			}
+
+		}
 	
 
 }

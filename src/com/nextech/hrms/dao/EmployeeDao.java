@@ -1,6 +1,7 @@
 package com.nextech.hrms.dao;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -64,12 +65,13 @@ public class EmployeeDao {
 				System.out.println("please enter valid id");
 			}
 		  //tx.commit();
-		  System.out.println("Deleted Successfully");
+		  
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			tx.rollback(); 
 		}
+		System.out.println("Deleted Successfully");
 	 }
 	 public void updateUser() throws ClassNotFoundException {
 		 Session session=HibernateUtil.getSessionFactory().openSession();
@@ -84,7 +86,7 @@ public class EmployeeDao {
 			if (employee != null) {
 				System.out.println("Enter Employee phoneNumber");
 				phoneNumberValidation(employee);
-				employee.setFirstName(employee1.getPhoneNumber());
+				employee.setPhoneNumber(data);
 				session.update(employee);
 				session.getTransaction().commit();
 				session.close();
@@ -92,12 +94,13 @@ public class EmployeeDao {
 					System.out.println("please enter valid id");
 				}
 			    //tx.commit();
-			    System.out.println("Update Successfully");
+			   
 			}
 			catch(Exception e){
 				e.printStackTrace();
 				tx.rollback(); 
 			}
+			 System.out.println("Update Successfully");
 	 }
 	  public List<Employee> getAllUsers() throws ClassNotFoundException, SQLException {
 		  Session session=HibernateUtil.getSessionFactory().openSession();
@@ -161,8 +164,9 @@ public class EmployeeDao {
 				
 	  }
 	  public void integerValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				nullValidation();
 				if (EmployeeDao.numberOrNot(data)) {
 					break;
 				} else {
@@ -171,21 +175,22 @@ public class EmployeeDao {
 
 			}
 		 }
-	  public void phoneNumberValidation(Employee employee){
+	  public void phoneNumberValidation(Employee employee) throws ParseException{
 			
-	        while(sc.hasNext()){
-	        	String	phoneNumber=sc.next();
-	        
-	        if(EmployeeMain.numberOrNot(phoneNumber) && (phoneNumber.length() == 10)){
-	        	employee.setPhoneNumber(phoneNumber);
-	            break;
-	            
-	        }else{
-	            System.out.println("please enter 10 digit mobile number");
-	        }
-	        }
+		  while (true) {
+				//data = sc.next();
+				nullValidation();
+				if (EmployeeMain.isPhoneNumber(data)) {
+					break;
+				} else {
+					System.out.println("please enter only 10 digit mobile number");
+				}
+
+			}
 			
 		}
+			
+	
 	  static boolean numberOrNot(String input)
 	    {
 	        try
@@ -198,5 +203,17 @@ public class EmployeeDao {
 	        }
 	        return true;
 	    }
-	  
+
+	private void nullValidation() {
+		while (true) {
+			data = sc.nextLine();
+			if (data != null && data.length() == 0) {
+				System.out.println("please enter data");
+			} else {
+				break;
+			}
+		}
+
+	}
+
 }

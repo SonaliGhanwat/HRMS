@@ -39,12 +39,13 @@ public class EmployeeLeaveDao {
 			session.getTransaction().commit();
 		    session.close();  
 		    //tx.commit();
-			 System.out.println("Insert Successfully");
+			
 			}
 			catch(Exception e){
 				e.printStackTrace();
 				 
 			}
+		 System.out.println("Insert Successfully");
 	}
 	
 	public void deleteEmployeeLeave() throws ClassNotFoundException {
@@ -53,7 +54,7 @@ public class EmployeeLeaveDao {
 		try{
 		  tx=session.beginTransaction();  
 		  Employeeleave employeeleave1 = new Employeeleave();
-		  System.out.println("Enter Employee Id to delete.");
+		  System.out.println("Enter EmployeeleaveData Id to delete.");
 		  integerValidation();
     	  employeeleave1.setId(Integer.parseInt(data));
     	  Employeeleave employeeleave = (Employeeleave)session.get(Employeeleave.class,employeeleave1.getId());
@@ -65,11 +66,12 @@ public class EmployeeLeaveDao {
     	}else{
 			System.out.println("please enter valid id");
 		}
-		  System.out.println("Deleted Successfully");
+		  
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println("Deleted Successfully");
 	}
 		
 	public void updateEmployeeLeaveUser() throws ClassNotFoundException {
@@ -78,7 +80,7 @@ public class EmployeeLeaveDao {
 			try{
 				tx=session.beginTransaction(); 
 				 Employeeleave employeeleave1 = new Employeeleave();
-				System.out.println("Enter Employee Id to update data.");
+				System.out.println("Enter EmployeeleaveData Id to update data.");
 				integerValidation();
 		    	employeeleave1.setId(Integer.parseInt(data));
 			    Employeeleave employeeleave = (Employeeleave)session.get(Employeeleave.class,employeeleave1.getId());
@@ -104,12 +106,13 @@ public class EmployeeLeaveDao {
 						System.out.println("please enter valid id");
 					}
 				    //tx.commit();
-				    System.out.println("Update Successfully");
+				  
 				}
 				catch(Exception e){
 					e.printStackTrace();
 					tx.rollback(); 
 				}
+			  System.out.println("Update Successfully");
 		 }
 	
 	 public List<Employeeleave>getEmployeeLeaveAllUsers() throws ClassNotFoundException, SQLException {
@@ -161,8 +164,9 @@ public class EmployeeLeaveDao {
 		}
   }
 	 public void integerValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				 nullValidation();
 				if (EmployeeMain.numberOrNot(data)) {
 					break;
 				} else {
@@ -172,8 +176,9 @@ public class EmployeeLeaveDao {
 			}
 		 }
 	 public void stringValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				 nullValidation();
 				if (EmployeeMain.isFullname(data)) {
 					break;
 				} else {
@@ -183,8 +188,9 @@ public class EmployeeLeaveDao {
 			}
 		 }
 	 public void dateValidation() throws ParseException{
-		 while (sc.hasNext()) {
-			     data = sc.next();
+		 while (true) {
+			     //data = sc.next();
+			      nullValidation();
 				if (EmployeeMain.isDate(data)) {
 					break;
 				} else {
@@ -194,6 +200,17 @@ public class EmployeeLeaveDao {
 
 		 }
 	    }
+	 private void nullValidation() {
+			while (true) {
+				data = sc.nextLine();
+				if (data != null && data.length() == 0) {
+					System.out.println("please enter data");
+				} else {
+					break;
+				}
+			}
+
+		}
 	
 }
 	

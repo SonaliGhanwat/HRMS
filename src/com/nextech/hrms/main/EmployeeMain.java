@@ -168,11 +168,13 @@ public class EmployeeMain {
 	    int id = Integer.parseInt(sc.nextLine());
 		employee.setId(id);*/
 		System.out.println("Enter Employee userid");
-		String userid = (sc.nextLine());
-		employee.setUserid(userid);
+		//String userid = (sc.nextLine());
+		nullValidation();
+		employee.setUserid(data);
 		System.out.println("Enter Employee password");
-		String password = (sc.nextLine());
-		employee.setPassword(password);
+		//String password = (sc.nextLine());
+		nullValidation();
+		employee.setPassword(data);
 		System.out.println("Enter Employee firstName");
 		stringValidation();
 		employee.setFirstName(data);
@@ -180,7 +182,7 @@ public class EmployeeMain {
 		stringValidation();
 		employee.setLastName(data);
 		System.out.println("Enter Employee phoneNumber");
-		phoneNumberValidation(employee);
+		phoneNumberValidation();
 		System.out.println("Enter Emailid");
 		emailidValidation();
 		employee.setEmailid(data);
@@ -203,6 +205,7 @@ public class EmployeeMain {
 		EmployeeDao employeeDao=new EmployeeDao();
 		employeeDao.addUser(employee);
 		displayOperation();
+		
 	}
 	private void deleteOpertaion() throws Exception{
 		EmployeeDao employeeDao=new EmployeeDao();
@@ -327,8 +330,8 @@ public class EmployeeMain {
 		displayOperation();
 	}
 	private void searchDailyTaskByIDOpertaion() throws Exception{
-		EmployeeAttendanceDao employeeAttendanceDao=new EmployeeAttendanceDao();
-		employeeAttendanceDao.getEmployeeAttendanceUserById() ;
+		EmployeeDailyTaskDao employeeDailyTaskDao =new EmployeeDailyTaskDao();
+		employeeDailyTaskDao.getDailyTaskUserById();
 		displayOperation();
 		
 	}
@@ -381,24 +384,25 @@ public class EmployeeMain {
 		displayOperation();
 		
 	}
-	private void phoneNumberValidation(Employee employee){
-		
-        while(sc.hasNext()){
-        	String	phoneNumber=sc.next();
-        
-        if(EmployeeMain.numberOrNot(phoneNumber) && (phoneNumber.length() == 10)){
-        	employee.setPhoneNumber(phoneNumber);
-            break;
-            
-        }else{
-            System.out.println("please enter 10 digit mobile number");
-        }
-        }
+	
+	private void phoneNumberValidation() throws ParseException{
+		while (true) {
+			//data = sc.next();
+			nullValidation();
+			if (EmployeeMain.isPhoneNumber(data)) {
+				break;
+			} else {
+				System.out.println("please enter only 10 digit mobile number");
+			}
+
+		}
 		
 	}
 	private void integerValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+		
+			while (true) {
+				//data = sc.next();
+				nullValidation();
 				if (EmployeeMain.numberOrNot(data)) {
 					break;
 				} else {
@@ -407,11 +411,22 @@ public class EmployeeMain {
 
 			}
 		}
+	private void nullValidation(){
+		while(true){
+			data=sc.nextLine();
+			if(data != null && data.length() == 0){
+				System.out.println("please enter  data");
+			}else{
+				break;
+			}
+		}
 		
+	}
 	
 	private void stringValidation(){
-		while (sc.hasNext()) {
-			data = sc.next();
+		while (true) {
+			//data = sc.next();
+			nullValidation();
 			if (EmployeeMain.isFullname(data)) {
 				break;
 			} else {
@@ -421,8 +436,9 @@ public class EmployeeMain {
 		}
 	 }
 	private void emailidValidation(){
-		 while (sc.hasNext()) {
-				data = sc.next();
+		 while (true) {
+				//data = sc.next();
+			     nullValidation();
 				if (EmployeeMain.isEmailid(data)) {
 					break;
 				} else {
@@ -433,8 +449,9 @@ public class EmployeeMain {
 			}
 	    }
 	private void dateValidation() throws ParseException{
-		 while (sc.hasNext()) {
-			     data = sc.next();
+		 while (true) {
+			     //data = sc.next();
+			      nullValidation();
 				if (EmployeeMain.isDate(data)) {
 					break;
 				} else {
@@ -445,8 +462,9 @@ public class EmployeeMain {
 		 }
 	    }
 	private void timeValidation() throws ParseException{
-		 while (sc.hasNext()) {
-			     data = sc.next();
+		 while (true) {
+			    // data = sc.next();
+			      nullValidation();
 				if (EmployeeMain.isTime(data)) {
 					break;
 				} else {
@@ -476,13 +494,16 @@ public class EmployeeMain {
 		    return str.matches(expression);        
 		}
 	 public static boolean isDate(String str) throws ParseException {
-		 
-		 String expression = "([1-9]{1}[0-9]{3})-([0-1]{1}[1-9]{1})-([0-2][0-9]||3[0-1])"; 
+		 String expression = "([0-9]{4})-([0-1]{1}[1-9]{1})-([0-2][0-9]||3[0-1])"; 
 		return str.matches(expression); 
      }
      public static boolean isTime(String str) throws ParseException {
 		 
 		 String expression = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"; 
+		return str.matches(expression); 
+     }
+     public static boolean isPhoneNumber(String str) throws ParseException {
+		 String expression = "([0-9]{10})"; 
 		return str.matches(expression); 
      }
      

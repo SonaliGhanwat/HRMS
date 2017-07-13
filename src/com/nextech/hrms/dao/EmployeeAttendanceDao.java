@@ -44,12 +44,13 @@ public class EmployeeAttendanceDao {
 		session.getTransaction().commit();
 	    session.close();  
 	    //tx.commit();
-		 System.out.println("Insert Successfully");
+		
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			tx.rollback();  
 		}
+		 System.out.println("Insert Successfully");
 	
 	}
 	 public void getEmployeeAttendanceStatus(Employeeattendance employeeAttendance) throws ClassNotFoundException, SQLException{
@@ -79,7 +80,7 @@ public class EmployeeAttendanceDao {
 	    		try{
 	    		  tx=session.beginTransaction();  
 	    		  Employeeattendance employeeAttendance1=new Employeeattendance();
-		    	  System.out.println("Enter Employee Id to delete.");
+		    	  System.out.println("Enter EmployeeAttendance Id to delete.");
 		    	  integerValidation();
 		    	  employeeAttendance1.setId(Integer.parseInt(data));
 		    	Employeeattendance employeeAttendance = (Employeeattendance)session.get(Employeeattendance.class,employeeAttendance1.getId());
@@ -91,11 +92,12 @@ public class EmployeeAttendanceDao {
 		    	}else{
 					System.out.println("please enter valid id");
 				}
-	    		  System.out.println("Deleted Successfully");
+	    		 
 	    		}
 	    		catch(Exception e){
 	    			e.printStackTrace();
 	    		}
+	    		 System.out.println("Deleted Successfully");
 	    	}
 	 public void updateEmployeeAtteandanceUser() throws ClassNotFoundException {
 		 Session session=HibernateUtil.getSessionFactory().openSession();
@@ -103,7 +105,7 @@ public class EmployeeAttendanceDao {
 			try{
 				tx=session.beginTransaction(); 
 				Employeeattendance employeeattendance1 = new Employeeattendance();
-				System.out.println("Enter Employee Id to update data.");
+				System.out.println("Enter EmployeeAttendance Id to update data.");
 				integerValidation();
 				employeeattendance1.setId(Integer.parseInt(data));
 			    Employeeattendance employeeattendance = (Employeeattendance)session.get(Employeeattendance.class,employeeattendance1.getId());
@@ -133,12 +135,13 @@ public class EmployeeAttendanceDao {
 					System.out.println("please enter valid id");
 				}
 			    //tx.commit();
-			    System.out.println("Update Successfully");
+			   
 			}
 			catch(Exception e){
 				e.printStackTrace();
 				tx.rollback(); 
 			}
+			 System.out.println("Update Successfully");
 	 }
 	 public List<Employeeattendance> getEmployeeAttendanceAllUsers() throws ClassNotFoundException, SQLException {
 		  Session session=HibernateUtil.getSessionFactory().openSession();
@@ -174,7 +177,7 @@ public class EmployeeAttendanceDao {
 			try{
 				tx=session.beginTransaction(); 
 				Employeeattendance employeeattendance1 = new Employeeattendance();
-				System.out.println("Enter Employee Id .");
+				System.out.println("Enter EmployeeAttendance Id .");
 				integerValidation();
 				employeeattendance1.setId(Integer.parseInt(data));
 				Employeeattendance employeeattendance = (Employeeattendance)session.get(Employeeattendance.class,employeeattendance1.getId());
@@ -195,8 +198,9 @@ public class EmployeeAttendanceDao {
 			
   }
 	 public void integerValidation(){
-			while (sc.hasNext()) {
-				data = sc.next();
+			while (true) {
+				//data = sc.next();
+				nullValidation();
 				if (EmployeeMain.numberOrNot(data)) {
 					break;
 				} else {
@@ -218,15 +222,27 @@ public class EmployeeAttendanceDao {
 	        return true;
 	    }
 	 public void timeValidation() throws ParseException{
-		 while (sc.hasNext()) {
-			     data = sc.next();
-				if (EmployeeMain.isTime(data)) {
-					break;
-				} else {
-					System.out.println("please enter date hh-mm-ss format");
+		while (true) {
+			// data = sc.next();
+			nullValidation();
+			if (EmployeeMain.isTime(data)) {
+				break;
+			} else {
+				System.out.println("please enter date hh-mm-ss format");
 
+			}
+		}
+	}
+	 private void nullValidation() {
+			while (true) {
+				data = sc.nextLine();
+				if (data != null && data.length() == 0) {
+					System.out.println("please enter data");
+				} else {
+					break;
 				}
-		 }
-	    }
+			}
+
+		}
 	 
 }
