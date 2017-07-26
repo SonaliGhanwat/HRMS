@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Formula;
+
 import java.sql.Time;
 import java.util.Date;
 import java.sql.Timestamp;
@@ -28,7 +30,7 @@ public class Employeeattendance implements Serializable {
 	private Time outtime;
 
 	private String status;
-
+	
 	private long totaltime; 
 	
 	@Column(name="created_date")

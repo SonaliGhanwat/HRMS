@@ -1,11 +1,25 @@
 package com.nextech.hrms.dao;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -63,7 +77,7 @@ public class EmployeeDailyTaskDao {
     	  Employeedailytask employeedailytask = (Employeedailytask)session.get(Employeedailytask.class,employeedailytask1.getId());
     	if(employeedailytask !=null){
     		employeedailytask.setIsActive(false);
-    	session.update(employeedailytask);
+    	  session.update(employeedailytask);
 		  session.getTransaction().commit();
 		  session.close();  
     	}else{
@@ -73,8 +87,9 @@ public class EmployeeDailyTaskDao {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			 System.out.println("Deleted Successfully");
+			
 		}
+		 System.out.println("Deleted Successfully");
 	}
 	public void updateDailyTaskUser() throws ClassNotFoundException {
 		 Session session=HibernateUtil.getSessionFactory().openSession();
@@ -120,8 +135,9 @@ public class EmployeeDailyTaskDao {
 			catch(Exception e){
 				e.printStackTrace();
 				tx.rollback(); 
-				 System.out.println("Update Successfully");
+				
 			}
+			 System.out.println("Update Successfully");
 	 }
 	 public List<Employeedailytask> getDailyTaskAllUsers() throws ClassNotFoundException, SQLException {
 		  Session session=HibernateUtil.getSessionFactory().openSession();
@@ -222,7 +238,7 @@ public class EmployeeDailyTaskDao {
 				if (EmployeeMain.isFullname(data)) {
 					break;
 				} else {
-					System.out.println("please enter only character");
+					System.out.println("please enter minimum or maximum text 2 to 255");
 				}
 
 			}
@@ -248,8 +264,9 @@ public class EmployeeDailyTaskDao {
 					break;
 				}
 			}
-
 		}
+	 
+	  }
+
 	
 
-}

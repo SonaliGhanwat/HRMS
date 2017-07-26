@@ -20,6 +20,12 @@ public class EmployeeDao {
 	public void addUser(Employee employee) throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;  
+		Employee employee2=	getEmployeeUserId(employee.getUserid());
+		if(employee2==null){
+		Employee employee3=getEmployeePhoneNumber(employee.getPhoneNumber());
+		if(employee3==null){
+		Employee employee4=getEmployeeEmailId(employee.getEmailid());
+		if(employee4==null){
 		try{
 		tx=session.beginTransaction(); 
 		employee.setUserid(employee.getUserid());
@@ -33,6 +39,7 @@ public class EmployeeDao {
 		employee.setAddress(employee.getAddress());
 		employee.setDepartment(employee.getDepartment());
 		employee.setSalary(employee.getSalary());
+		employee.setUsertype(employee.getUsertype());
 		employee.setIsActive(true);
 		session.save(employee);
 		session.getTransaction().commit();
@@ -43,6 +50,11 @@ public class EmployeeDao {
 		catch(Exception e){
 			e.printStackTrace();
 			tx.rollback(); 
+		}
+		}
+		}
+		}else{
+			System.out.println("UserId Phonenumber emailid Is already Avilable");
 		}
 	
 	}
@@ -65,11 +77,9 @@ public class EmployeeDao {
 				System.out.println("please enter valid id");
 			}
 		  //tx.commit();
-		  
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			tx.rollback(); 
 		}
 		System.out.println("Deleted Successfully");
 	 }
@@ -98,7 +108,7 @@ public class EmployeeDao {
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				tx.rollback(); 
+				
 			}
 			 System.out.println("Update Successfully");
 	 }
@@ -108,7 +118,6 @@ public class EmployeeDao {
 		Criteria criteria = session.createCriteria(Employee.class);
 		criteria.add(Restrictions.eq("isActive", true));
 		List<Employee> employees =  (List<Employee>) (criteria.list().size() > 0 ? criteria.list() : null);
-		
 		
 		if(employees !=null && ! employees.isEmpty()){
 			tx=session.beginTransaction(); 
@@ -143,7 +152,7 @@ public class EmployeeDao {
 				try{
 					tx=session.beginTransaction(); 
 					Employee employee1 = new Employee();
-					System.out.println("Enter Employee Id to update data.");
+					System.out.println("Enter Employee Id to search data.");
 					integerValidation();
 					employee1.setId(Integer.parseInt(data));
 					Employee employee = (Employee)session.get(Employee.class,employee1.getId());
@@ -159,10 +168,37 @@ public class EmployeeDao {
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				tx.rollback(); 
+				
 			}
 				
 	  }
+	  
+	  private Employee getEmployeeUserId(String userid){
+			 Session session=HibernateUtil.getSessionFactory().openSession();
+				Transaction tx = null;  
+			  Criteria criteria = session.createCriteria(Employee.class);
+			  criteria.add(Restrictions.eq("userid", userid));
+			  //criteria.add(Restrictions.eq("phoneNumber",phoneNumber));
+			  //criteria.add(Restrictions.eq("emailid",emailid));
+			  Employee employee = criteria.list().size() > 0 ? (Employee) criteria.list().get(0) : null;
+			  return employee;
+		 }
+	  private Employee getEmployeePhoneNumber(String phoneNumber){
+			 Session session=HibernateUtil.getSessionFactory().openSession();
+				Transaction tx = null;  
+			  Criteria criteria = session.createCriteria(Employee.class);
+			  criteria.add(Restrictions.eq("phoneNumber",phoneNumber));
+			  Employee employee = criteria.list().size() > 0 ? (Employee) criteria.list().get(0) : null;
+			  return employee;
+		 }
+	  private Employee getEmployeeEmailId(String emailid){
+			 Session session=HibernateUtil.getSessionFactory().openSession();
+				Transaction tx = null;  
+			  Criteria criteria = session.createCriteria(Employee.class);
+			  criteria.add(Restrictions.eq("emailid",emailid));
+			  Employee employee = criteria.list().size() > 0 ? (Employee) criteria.list().get(0) : null;
+			  return employee;
+		 }
 	  public void integerValidation(){
 			while (true) {
 				//data = sc.next();
@@ -215,5 +251,6 @@ public class EmployeeDao {
 		}
 
 	}
+	
 
 }

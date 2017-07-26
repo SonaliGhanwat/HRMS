@@ -11,16 +11,19 @@ import com.nextech.hrms.dao.EmployeeAttendanceDao;
 import com.nextech.hrms.dao.EmployeeDailyTaskDao;
 import com.nextech.hrms.dao.EmployeeDao;
 import com.nextech.hrms.dao.EmployeeLeaveDao;
+import com.nextech.hrms.dao.UserTypeDao;
 import com.nextech.hrms.model.Employee;
 import com.nextech.hrms.model.Employeeattendance;
 import com.nextech.hrms.model.Employeedailytask;
 import com.nextech.hrms.model.Employeeleave;
+import com.nextech.hrms.model.Usertype;
 
 public class EmployeeMain {
 	public long totaltime;
 	public static Scanner sc = new Scanner(System.in);
 	public static List<Employee> employees = new ArrayList<Employee>();
 	public static String data ="";
+	public static String menuChoice="";
 	public static void main(String args[]) throws Exception {
 		EmployeeMain employeeMain = new EmployeeMain();
 		employeeMain.displayOperation();
@@ -29,9 +32,8 @@ public class EmployeeMain {
 	private void displayOperation() throws Exception {
 
 		System.out.println("**** Menu Options ****");
-		int menuChoice = -1;
-		while (menuChoice != 0) {
-
+		//int menuChoice = -1;
+		while (true) {
 			System.out.println("1. Insert Employee Record");
 			System.out.println("2. Delete Employee Record");
 			System.out.println("3. Update Employee Record");
@@ -41,24 +43,32 @@ public class EmployeeMain {
 			System.out.println("7. Delete EmployeeAttendance Record");
 			System.out.println("8. Update EmployeeAttendance Record");
 			System.out.println("9. Display EmployeeAttendance Record");
-			System.out.println("10.Search Employeestatus Record");
+			System.out.println("10.Search EmployeeAttendance Record");
 			System.out.println("11.Insert EmployeeDailyTask Record");
 			System.out.println("12.Delete EmployeeDailyTask Record");
 			System.out.println("13.Update EmployeeDailyTask Record");
 			System.out.println("14.Display EmployeeDailyTask Record");
-			System.out.println("15.Search EmployeeDailyTaskBYID Record");
-			System.out.println("16.Search EmployeeDailyTaskName Record");
+			System.out.println("15.Search EmployeeDailyTaskById Record");
+			System.out.println("16.Search EmployeeDailyTaskNameByEmployeeid Record");
 			System.out.println("17.Insert EmployeeLeave Record");
 			System.out.println("18.Delete EmployeeLeave Record");
 			System.out.println("19.Update EmployeeLeave Record");
 			System.out.println("20.Search EmployeeLeave Record");
-			System.out.println("21.Search EmployeeLeaveById Record");
+			System.out.println("21.Search EmployeeLeaveByEmployeeId Record");
+			System.out.println("22.Insert UserType Record");
+			System.out.println("23.Delete UserType Record");
+			System.out.println("24.Update UserType Record");
+			System.out.println("25.Search UserTypeById Record");
+			System.out.println("26.Employee Attendance Report");
+			System.out.println("27.Employee Leave Report ");
+			System.out.println("28.Monthly Employee Leave Report ");
 			System.out.println("Enter your choice:");
-			Scanner sc = new Scanner(System.in);
-			menuChoice = sc.nextInt();
+			//Scanner sc = new Scanner(System.in);
+			menuValidation();
+			//menuChoice = sc.nextInt();
 			
-
-			switch (menuChoice) {
+			switch (Integer.parseInt(menuChoice)) {
+			
 			case 1: {
 				EmployeeMain employeeMain = new EmployeeMain();
 				employeeMain.createOpertaion();
@@ -79,101 +89,149 @@ public class EmployeeMain {
 				EmployeeMain employeeMain = new EmployeeMain();
 				employeeMain.displayOpertaion();
 			}
+			break;
 			case 5:{
 				EmployeeMain employeeMain = new EmployeeMain();
 				employeeMain.searchOpertaion();
 			}
+			break;
              case 6:{
 				
 				EmployeeMain employeeMain = new EmployeeMain();
 				employeeMain.createAttendanceOpertaion();
 			}
+             break;
              case 7:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.deleteAttendanceOpertaion();
  			}
+             break;
              case 8:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.updateEmployeeAttendanceOpertaion();
  			}
+             break;
              case 9:{
   				EmployeeMain employeeMain = new EmployeeMain();
   				employeeMain.displayAttendanceOpertaion();
   			}
+             break;
              case 10:{
    				EmployeeMain employeeMain = new EmployeeMain();
    				employeeMain.searchEmployeeAttendanceOpertaion();
    			}
+             break;
              case 11:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.createEmployeeDailyTaskOpertaion();
  				
  			}
+             break;
              case 12:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.deleteDailyTaskOpertaion();
  				
  			}
+             break;
              case 13:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.updateDailyTaskOpertaion();
  				
  			}
+             break;
              case 14:{
   				EmployeeMain employeeMain = new EmployeeMain();
   				employeeMain.displayDailyTaskOpertaion();
   				
   			}
+             break;
              case 15:{
     				EmployeeMain employeeMain = new EmployeeMain();
     				employeeMain.searchDailyTaskByIDOpertaion();
-    				
     			}
+             break;
              case 16:{
    				EmployeeMain employeeMain = new EmployeeMain();
    				employeeMain.searchEmployeeDailyTaskNameOpertaion();
-   				
    			}
+             break;
              case 17:{
     				EmployeeMain employeeMain = new EmployeeMain();
     				employeeMain.createEmployeeLeaveOpertaion();
-    				
     			}
+             break;
              case 18:{
  				EmployeeMain employeeMain = new EmployeeMain();
  				employeeMain.deleteEmployeeLeaveOpertaion();
- 				
  			}
+             break;
              case 19:{
   				EmployeeMain employeeMain = new EmployeeMain();
   				employeeMain.updateEmployeeLeaveOpertaion();
-  				
   			}
+             break;
              case 20:{
    				EmployeeMain employeeMain = new EmployeeMain();
    				employeeMain.searchEmployeeLeaveOpertaion();
-   				
    			}
+             break;
              case 21:{
     				EmployeeMain employeeMain = new EmployeeMain();
-    				employeeMain.searchEmployeeLeaveByIdOpertaion();;
-    				
+    				employeeMain.searchEmployeeLeaveByIdOpertaion();
     			}
+             break;
+             case 22:{
+ 				EmployeeMain employeeMain = new EmployeeMain();
+ 				employeeMain.createUserTypeOpertaion();
+ 			}
+             break;
+             case 23:{
+ 				EmployeeMain employeeMain = new EmployeeMain();
+ 				employeeMain.deleteUserTypeOpertaion();
+ 			}
+          break;
+          case 24:{
+				EmployeeMain employeeMain = new EmployeeMain();
+				employeeMain.updateUserTypeOpertaion();
 			}
+          break;
+          case 25:{
+				EmployeeMain employeeMain = new EmployeeMain();
+				employeeMain.searchUserTypeByIdOpertaion();
+			}
+         break;
+          case 26:{
+				EmployeeMain employeeMain = new EmployeeMain();
+				employeeMain.calculateEmployeeAttendanceOpertaion();
+			}
+         break;
+          case 27:{
+				EmployeeMain employeeMain = new EmployeeMain();
+				employeeMain.calculateEmployeeLeaveOpertaion();
+			}
+          break;
+          case 28:{
+				EmployeeMain employeeMain = new EmployeeMain();
+				employeeMain.calculateMonthlyEmployeeLeaveOpertaion();
+			}
+          break;
+             default:
+                 System.out.println("That is not a correct choice. Please try again!");
+                 break;
+			}
+		
 		}
 	}
+			
+	
 	private void createOpertaion() throws Exception{
 		Employee employee = new Employee();
-		/*System.out.println("Enter Employee Id.");
-	    int id = Integer.parseInt(sc.nextLine());
-		employee.setId(id);*/
 		System.out.println("Enter Employee userid");
-		//String userid = (sc.nextLine());
-		nullValidation();
+		//nullValidation();
+		minmaxValidation();
 		employee.setUserid(data);
 		System.out.println("Enter Employee password");
-		//String password = (sc.nextLine());
-		nullValidation();
+		minmaxValidation();
 		employee.setPassword(data);
 		System.out.println("Enter Employee firstName");
 		stringValidation();
@@ -183,6 +241,7 @@ public class EmployeeMain {
 		employee.setLastName(data);
 		System.out.println("Enter Employee phoneNumber");
 		phoneNumberValidation();
+		employee.setPhoneNumber(data);
 		System.out.println("Enter Emailid");
 		emailidValidation();
 		employee.setEmailid(data);
@@ -202,6 +261,11 @@ public class EmployeeMain {
 		System.out.println("Enter salary");
 		integerValidation();
 		employee.setSalary(Integer.parseInt(data));
+		System.out.println("Enter User type Id");
+		Usertype usertype = new Usertype();
+		integerValidation();
+		usertype.setId(Integer.parseInt(data));
+		employee.setUsertype(usertype);
 		EmployeeDao employeeDao=new EmployeeDao();
 		employeeDao.addUser(employee);
 		displayOperation();
@@ -258,7 +322,7 @@ public class EmployeeMain {
 		employeeAttendanceDao.addEmployeeAttendance(employeeAttendance);
 		displayOperation();
 		
-	}
+	}    
 	private void deleteAttendanceOpertaion() throws Exception{
 	    EmployeeAttendanceDao employeeAttendanceDao=new EmployeeAttendanceDao();
 		employeeAttendanceDao.deleteEmployeeAttendance();
@@ -277,6 +341,22 @@ public class EmployeeMain {
 	private void searchEmployeeAttendanceOpertaion() throws Exception{
 		EmployeeAttendanceDao employeeAttendanceDao=new EmployeeAttendanceDao();
 		employeeAttendanceDao.getEmployeeAttendanceUserById() ;
+		displayOperation();
+		
+	}
+	private void calculateEmployeeAttendanceOpertaion() throws Exception{
+		Employeeattendance employeeattendance=new Employeeattendance();
+		Employee employee = new Employee();
+		System.out.println("Enter Employee Id.");
+	    //int id = Integer.parseInt(sc.nextLine());
+		integerValidation();
+		employee.setId(Integer.parseInt(data));
+		employeeattendance.setEmployee(employee);
+		System.out.println("Enter date");
+		dateValidation();
+		employeeattendance.setDate(Date.valueOf(data));
+		EmployeeAttendanceDao employeeAttendanceDao=new EmployeeAttendanceDao();
+		employeeAttendanceDao.calculateEmployeeAttendance(employeeattendance);
 		displayOperation();
 		
 	}
@@ -312,7 +392,7 @@ public class EmployeeMain {
 		EmployeeDailyTaskDao employeeDailyTaskDao =new EmployeeDailyTaskDao();
 		employeeDailyTaskDao.addEmployeedailytaskUser(employeeDailyTask);
 		displayOperation();
-		
+		                                                                                                           
 	}
 	private void deleteDailyTaskOpertaion() throws Exception{
 		EmployeeDailyTaskDao employeeDailyTaskDao =new EmployeeDailyTaskDao();
@@ -384,6 +464,60 @@ public class EmployeeMain {
 		displayOperation();
 		
 	}
+	private void calculateEmployeeLeaveOpertaion() throws Exception{
+		Employeeleave employeeleave = new Employeeleave();
+		Employee employee = new Employee();
+		System.out.println("Enter Employee Id.");
+	    //int id = Integer.parseInt(sc.nextLine());
+		integerValidation();
+		employee.setId(Integer.parseInt(data));
+		employeeleave.setEmployee(employee);
+		EmployeeLeaveDao employeeLeaveDao = new EmployeeLeaveDao();
+		employeeLeaveDao.calculateEmployeeleave(employeeleave);
+		displayOperation();
+	}
+	private void calculateMonthlyEmployeeLeaveOpertaion() throws Exception{
+		Employeeleave employeeleave = new Employeeleave();
+		Employee employee = new Employee();
+		System.out.println("Enter Employee Id.");
+	    //int id = Integer.parseInt(sc.nextLine());
+		integerValidation();
+		employee.setId(Integer.parseInt(data));
+		employeeleave.setEmployee(employee);
+		EmployeeLeaveDao employeeLeaveDao = new EmployeeLeaveDao();
+		employeeLeaveDao.calculateMonthlyEmployeeleave(employeeleave);
+		displayOperation();
+		
+	}
+	private void createUserTypeOpertaion() throws Exception{
+		Usertype usertype=new Usertype();
+		System.out.println("Enter UserType Name");
+		stringValidation();
+		usertype.setUsertypeName(data);
+		System.out.println("Enter Description");
+		stringValidation();
+		usertype.setDescription(data);
+		UserTypeDao userTypeDao = new UserTypeDao();
+		userTypeDao.addUserType(usertype);
+		displayOperation();
+		
+	}
+	private void deleteUserTypeOpertaion() throws Exception{
+		UserTypeDao userTypeDao = new UserTypeDao();
+		userTypeDao.deleteUserType();
+		 displayOperation();
+	}
+	private void updateUserTypeOpertaion() throws Exception{
+		UserTypeDao userTypeDao = new UserTypeDao();
+		userTypeDao.updateUserType();
+		 displayOperation();
+	}
+	private void searchUserTypeByIdOpertaion() throws Exception{
+		UserTypeDao userTypeDao = new UserTypeDao();
+		userTypeDao.getUserById();
+		displayOperation();
+		
+	}
 	
 	private void phoneNumberValidation() throws ParseException{
 		while (true) {
@@ -411,7 +545,22 @@ public class EmployeeMain {
 
 			}
 		}
+	private void menuValidation(){
+		
+		while (true) {
+			
+			menuChoice = sc.next();
+			if (EmployeeMain.numberOrNot(String.valueOf(menuChoice))) {
+				
+				break;
+			} else {
+				System.out.println("please enter only number");
+			}
+
+		}
+	}
 	private void nullValidation(){
+		Scanner sc = new Scanner(System.in);
 		while(true){
 			data=sc.nextLine();
 			if(data != null && data.length() == 0){
@@ -423,14 +572,14 @@ public class EmployeeMain {
 		
 	}
 	
-	private void stringValidation(){
+	private void stringValidation() throws ParseException{
 		while (true) {
 			//data = sc.next();
 			nullValidation();
 			if (EmployeeMain.isFullname(data)) {
 				break;
 			} else {
-				System.out.println("please enter only character");
+				System.out.println("please enter minimum or maximum text 2 to 255");
 			}
 
 		}
@@ -458,7 +607,6 @@ public class EmployeeMain {
 					System.out.println("please enter date yyyy-mm-dd format");
 
 				}
-
 		 }
 	    }
 	private void timeValidation() throws ParseException{
@@ -473,6 +621,18 @@ public class EmployeeMain {
 				}
 		 }
 	    }
+	private void minmaxValidation() throws ParseException{
+			 while (true) {
+				    // data = sc.next();
+				 nullValidation();
+					if (EmployeeMain.isMinMax(data)) {
+						break;
+					} else {
+						System.out.println("please enter minimum or maximum text 2 to 255 ");
+
+					}
+			 }
+		    }
 	  public static boolean numberOrNot(String input)
 	    {
 	        try
@@ -486,7 +646,7 @@ public class EmployeeMain {
 	        return true;
 	    }
 	 public static boolean isFullname(String str) {
-		    String expression = "[a-zA-Z]+"; 
+		    String expression = "[a-zA-Z\\s]{2,255}"; 
 		    return str.matches(expression);        
 		}
 	 public static boolean isEmailid(String str) {
@@ -504,6 +664,10 @@ public class EmployeeMain {
      }
      public static boolean isPhoneNumber(String str) throws ParseException {
 		 String expression = "([0-9]{10})"; 
+		return str.matches(expression); 
+     }
+     public static boolean isMinMax(String str) throws ParseException {
+		 String expression = "([a-zA-Z0-9\\s]{2,255})"; 
 		return str.matches(expression); 
      }
      

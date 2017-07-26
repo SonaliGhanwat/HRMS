@@ -3,17 +3,20 @@ package com.nextech.hrms.dao;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import com.nextech.hrms.main.EmployeeMain;
 import com.nextech.hrms.model.Employee;
-import com.nextech.hrms.model.Employeedailytask;
+import com.nextech.hrms.model.Employeeattendance;
 import com.nextech.hrms.model.Employeeleave;
 import com.nextech.hrms.util.HibernateUtil;
 
@@ -23,6 +26,8 @@ public class EmployeeLeaveDao {
 	public void addEmployeeLeaveUser(Employeeleave employeeleave) throws ClassNotFoundException {
 		Session session=HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;  
+		Employeeleave employeeleave1 = getEmployeeByEmployeeIdAndDate(employeeleave.getEmployee(), (Date) employeeleave.getLeavedate());
+		if(employeeleave1==null){
 		
 		try{
 		 tx=session.beginTransaction();  
@@ -45,7 +50,11 @@ public class EmployeeLeaveDao {
 				e.printStackTrace();
 				 
 			}
-		 System.out.println("Insert Successfully");
+		System.out.println("Insert Successfully");
+		}else{
+			System.out.println("id and Date already avilable");
+		}
+		 
 	}
 	
 	public void deleteEmployeeLeave() throws ClassNotFoundException {
@@ -155,6 +164,13 @@ public class EmployeeLeaveDao {
 			Criteria criteria = session.createCriteria(Employeeleave.class);
 			criteria.add(Restrictions.eq("employee.id", employeeleave1.getEmployee().getId()));
 			Employeeleave employeeleave = criteria.list().size() > 0 ? (Employeeleave) criteria.list().get(0) : null;
+			if(employeeleave!=null){
+				session.getTransaction().commit();
+			    session.close();  
+				
+			}else{
+				System.out.println("please enter valid id");
+			}
 					
 			System.out.println("Employe Daily Task:" + employeeleave);
 		}
@@ -163,6 +179,117 @@ public class EmployeeLeaveDao {
 			
 		}
   }
+	 
+	 private Employeeleave getEmployeeByEmployeeIdAndDate(Employee empId,Date date){
+		 Session session=HibernateUtil.getSessionFactory().openSession();
+			Transaction tx = null;  
+		  Criteria criteria = session.createCriteria(Employeeleave.class);
+		  criteria.add(Restrictions.eq("employee", empId));
+		  criteria.add(Restrictions.eq("leavedate",date));
+		  Employeeleave  employeeleave = criteria.list().size() > 0 ? (Employeeleave) criteria.list().get(0) : null;
+		  return employeeleave;
+	 }
+	 
+	 private List<Employeeleave> calculateEmployeeLeaveByEmployeeId(Employee empId){
+		 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		  Session session = sessionFactory.openSession();
+		  session.beginTransaction();
+		  Criteria criteria = session.createCriteria(Employeeleave.class);
+		  criteria.add(Restrictions.eq("employee", empId));
+		  Employeeleave  employeeleave = criteria.list().size() > 0 ? (Employeeleave) criteria.list().get(0) : null;
+		  
+		  SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+		  int year = Integer.valueOf(yearFormat.format(employeeleave.getLeavedate()));
+		  Query query = session.createQuery("FROM Employeeleave where employeeid=:employeeid and year(leavedate)=:year");
+		 query.setParameter("employeeid", empId);
+		 query.setParameter("year", year);
+		 //query.setParameter("year1", year1);
+		 int totalCount=0;
+		 List<Employeeleave> employeeleaves = query.list();
+		 for (Employeeleave employeeleave1 : employeeleaves) {
+			 SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+			  int day = Integer.valueOf(dayFormat.format(employeeleave1.getLeavedate()));
+			  SimpleDateFormat dayFormat1 = new SimpleDateFormat("dd");
+			  int day1 = Integer.valueOf(dayFormat1.format(employeeleave1.getAfterleavejoiningdate()));
+			 Query query1 = session.createQuery("FROM Employeeleave where employeeid=:employeeid and Day(leavedate)=:day and Day(afterleavejoiningdate)=:day1");
+			 query1.setParameter("employeeid", empId);
+			 query1.setParameter("day", day);
+			 query1.setParameter("day1", day1);
+			 totalCount=totalCount+day1-day;
+		}
+		 System.out.println("Total Leave Count:"+totalCount);
+			return employeeleaves;
+	 }
+	 public void calculateEmployeeleave(Employeeleave employeeleave) throws ClassNotFoundException, ParseException {
+		    Session session=HibernateUtil.getSessionFactory().openSession();
+			Transaction tx = null;  
+			tx=session.beginTransaction(); 
+		    List<Employeeleave> employeeleaves=calculateEmployeeLeaveByEmployeeId(employeeleave.getEmployee());
+		    if(employeeleaves !=null && ! employeeleaves.isEmpty()){
+			for (Employeeleave employeeleave1 : employeeleaves) {
+				
+				  System.out.println("Employee Deatials:\n" +employeeleave1);
+			}
+			session.getTransaction().commit();
+		    session.close(); 
+		    }else{
+           	 System.out.println("There is no Employee Data Avilable for this month ");
+				
+			}
+	 }
+	 
+	 
+	 private List<Employeeleave> calculateMonthlyEmployeeLeaveByEmployeeId(Employee empId){
+		 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		  Session session = sessionFactory.openSession();
+		  session.beginTransaction();
+		  Criteria criteria = session.createCriteria(Employeeleave.class);
+		  criteria.add(Restrictions.eq("employee", empId));
+		  Employeeleave  employeeleave = criteria.list().size() > 0 ? (Employeeleave) criteria.list().get(0) : null;
+		  
+		  SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+		  int year = Integer.valueOf(yearFormat.format(employeeleave.getLeavedate()));
+		  
+		  SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+		  int month = Integer.valueOf(monthFormat .format(employeeleave.getLeavedate()));
+		  Query query = session.createQuery("FROM Employeeleave where employeeid=:employeeid and year(leavedate)=:year and month(leavedate)=:month");
+		 query.setParameter("employeeid", empId);
+		 query.setParameter("year", year);
+		 query.setParameter("month", month);
+		 //query.setParameter("year1", year1);
+		 int totalCount=0;
+		 List<Employeeleave> employeeleaves = query.list();
+		 for (Employeeleave employeeleave1 : employeeleaves) {
+			 SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+			  int day = Integer.valueOf(dayFormat.format(employeeleave1.getLeavedate()));
+			  SimpleDateFormat dayFormat1 = new SimpleDateFormat("dd");
+			  int day1 = Integer.valueOf(dayFormat1.format(employeeleave1.getAfterleavejoiningdate()));
+			 Query query1 = session.createQuery("FROM Employeeleave where employeeid=:employeeid and Day(leavedate)=:day and Day(afterleavejoiningdate)=:day1");
+			 query1.setParameter("employeeid", empId);
+			 query1.setParameter("day", day);
+			 query1.setParameter("day1", day1);
+			 totalCount=totalCount+day1-day;
+		}
+		 System.out.println("Total Leave Count:"+totalCount);
+			return employeeleaves;
+	 }
+	 public void calculateMonthlyEmployeeleave(Employeeleave employeeleave) throws ClassNotFoundException, ParseException {
+		    Session session=HibernateUtil.getSessionFactory().openSession();
+			Transaction tx = null;  
+			tx=session.beginTransaction(); 
+		    List<Employeeleave> employeeleaves=calculateMonthlyEmployeeLeaveByEmployeeId(employeeleave.getEmployee());
+		    if(employeeleaves !=null && ! employeeleaves.isEmpty()){
+			for (Employeeleave employeeleave1 : employeeleaves) {
+				
+				  System.out.println("Employee Deatials:\n" +employeeleave1);
+			}
+			session.getTransaction().commit();
+		    session.close(); 
+		    }else{
+           	 System.out.println("There is no Employee Data Avilable for this month ");
+				
+			}
+	 }
 	 public void integerValidation(){
 			while (true) {
 				//data = sc.next();
@@ -182,7 +309,7 @@ public class EmployeeLeaveDao {
 				if (EmployeeMain.isFullname(data)) {
 					break;
 				} else {
-					System.out.println("please enter only character");
+					System.out.println("please enter minimum or maximum text 2 to 255");
 				}
 
 			}

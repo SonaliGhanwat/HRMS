@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
@@ -54,6 +56,7 @@ public class Employee implements Serializable {
 	private String phoneNumber;
 
 	private int salary;
+	
 
 	private String userid;
 
@@ -70,6 +73,10 @@ public class Employee implements Serializable {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
 	private List<Employeeleave> employeeleaves;
+	
+	@ManyToOne
+	@JoinColumn(name="usertypeId")
+	private Usertype usertype;
 	
 
 	public List<Employeedailytask> getEmployeedailytasks() {
@@ -162,9 +169,7 @@ public class Employee implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 	
-
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -235,6 +240,15 @@ public List<Employeeleave> getEmployeeleaves() {
 
 	public void setEmployeeleaves(List<Employeeleave> employeeleaves) {
 		this.employeeleaves = employeeleaves;
+	}
+	
+
+public Usertype getUsertype() {
+		return usertype;
+	}
+
+	public void setUsertype(Usertype usertype) {
+		this.usertype = usertype;
 	}
 
 @Override
